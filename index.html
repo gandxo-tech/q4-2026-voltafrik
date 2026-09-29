@@ -343,14 +343,23 @@ h1,h2{text-transform:uppercase}
 .proof span{font-size:.82rem;font-weight:700}
 
 /* demo switcher for evaluators */
-.demo-bar{background:#000;color:#999;font-size:.74rem;padding:.35rem .8rem;border-bottom:1px solid rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;gap:.6rem;flex-wrap:wrap;z-index:70;position:relative}
+.demo-bar{background:#000;color:#999;font-size:.7rem;padding:.2rem .6rem;border-bottom:1px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;gap:.6rem;flex-wrap:wrap;z-index:70;position:relative}
 .demo-bar strong{color:#FFE600;letter-spacing:.05em;text-transform:uppercase;display:inline-flex;align-items:center;gap:.3rem}
-.demo-bar strong svg{width:13px;height:13px}
-.demo-bar a{color:#fff;text-decoration:none;padding:.15rem .5rem;border-radius:4px;border:1px solid rgba(255,255,255,.2);font-weight:600;display:inline-flex;align-items:center;gap:.3rem;transition:all .15s}
-.demo-bar a svg{width:12px;height:12px}
+.demo-bar strong svg{width:12px;height:12px}
+.demo-bar a{color:#fff;text-decoration:none;padding:.1rem .45rem;border-radius:4px;border:1px solid rgba(255,255,255,.2);font-weight:600;display:inline-flex;align-items:center;gap:.25rem;transition:all .15s;font-size:.68rem}
+.demo-bar a svg{width:11px;height:11px}
 .demo-bar a:hover,.demo-bar a.active{background:#FFE600;color:#000;border-color:#FFE600}
 
-/* wishlist heart button */
+/* promo top bar */
+.promo{background:var(--promo-bg,#FFE600);color:var(--promo-fg,#000);font-weight:800;font-size:.78rem;padding:.35rem .8rem;text-align:center;display:flex;align-items:center;justify-content:center;gap:.6rem;letter-spacing:.02em;border-bottom:1px solid rgba(0,0,0,.1)}
+
+/* card-body decluttered layout */
+.card-body{padding:1.1rem;display:flex;flex-direction:column;gap:.4rem;flex:1}
+.card-cat{font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.card h3{font-size:1.05rem;margin:.1rem 0;font-family:var(--fcard,var(--fd));font-weight:800;line-height:1.25}
+.card-short-desc{font-size:.82rem;color:#C2C2C2;margin:0;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.card-save-pill{display:inline-flex;align-items:center;gap:.25rem;background:rgba(255,230,0,.12);color:var(--acc);font-weight:800;font-size:.72rem;padding:.15rem .45rem;border-radius:4px;width:fit-content}
+.card-save-pill svg{width:12px;height:12px}
 .wish-btn{position:absolute;top:.7rem;right:.7rem;z-index:3;width:34px;height:34px;border-radius:50%;background:rgba(0,0,0,.7);border:1px solid rgba(255,255,255,.3);color:#fff;display:grid;place-items:center;transition:transform .15s,color .15s,background .15s}
 .wish-btn:hover{transform:scale(1.1);color:#FFE600;border-color:#FFE600}
 .wish-btn.active{color:#FF2D2D;background:#fff;border-color:#fff}
@@ -763,16 +772,17 @@ function card(p){
   <div class="card-body">
    <div style="display:flex;justify-content:space-between;align-items:center;gap:.4rem">
     <span class="card-cat">${esc(p.catLabel||p.cat)}</span>
-    <span class="micro-tag">${IC.truck} 24 h chrono</span>
+    <span class="micro-tag">${IC.truck} 24 h</span>
    </div>
    <h3><a href="#/produit/${p.id}">${esc(p.name)}</a></h3>
    ${p.rating?stars(p.rating,p.reviews):''}
    <p class="card-short-desc">${esc(shortBenefit)}</p>
-   <div class="price"><strong>${fcfa(p.price)}${p.unit?`<small style="font-size:.7em;font-weight:600"> ${p.unit}</small>`:''}</strong>${p.was?`<s>${fcfa(p.was)}</s>`:''}</div>
-   ${p.was?`<span class="card-save">${IC.check} Économie : ${fcfa(p.was-p.price)}</span>`:''}
-   ${p.stock&&p.stock<=S.lowStock?`<span class="stock">${IC.clock} Plus que ${p.stock} en stock · forte demande</span>`:''}
+   <div class="price">
+    <strong>${fcfa(p.price)}${p.unit?`<small style="font-size:.7em;font-weight:600"> ${p.unit}</small>`:''}</strong>
+    ${p.was?`<s>${fcfa(p.was)}</s> <span class="card-save-pill">${IC.check} -${fcfa(p.was-p.price)}</span>`:''}
+   </div>
+   ${p.stock&&p.stock<=S.lowStock?`<span class="stock">${IC.clock} Plus que ${p.stock} en stock</span>`:''}
    ${S.cardExtra?S.cardExtra(p):''}
-   <div class="card-trust-hint">${IC.shield} Test devant livreur · Garanti 12 mois</div>
    <button class="btn btn-acc btn-sm add" data-add="${p.id}">Ajouter au panier</button>
   </div></article>`;
 }
@@ -879,11 +889,11 @@ function renderProduct(id){
     ${p.noQty?'':`<div class="qty" role="group" aria-label="Quantité"><button data-q="-1" aria-label="Moins">−</button><output id="qv">1</output><button data-q="1" aria-label="Plus">+</button></div>`}
     <button class="btn btn-acc" data-add-cur>${esc(S.ctaPdp||'Ajouter au panier')} · <span id="pdp-total">${fcfa(p.price)}</span></button>
    </div>
-   <div style="background:#111;border:1px solid var(--line);border-radius:8px;padding:.85rem 1rem;margin:1rem 0;display:grid;gap:.35rem">
-    <div style="display:flex;gap:.5rem;align-items:center;font-weight:700;color:var(--acc);font-size:.9rem">${IC.truck}<span>Commandez avant 16 h : livré demain chez vous</span></div>
-    <span class="muted" style="font-size:.82rem">Déballez et testez votre appareil devant le livreur à Cotonou ou Abidjan avant de régler.</span>
+   <div style="display:flex;align-items:center;justify-content:space-between;gap:.5rem;padding:.75rem 0;margin:.4rem 0;border-block:1px solid var(--line);font-size:.82rem">
+    <span style="display:inline-flex;align-items:center;gap:.35rem;color:var(--acc);font-weight:700">${IC.truck} Livré demain (24 h)</span>
+    <span style="display:inline-flex;align-items:center;gap:.35rem;color:var(--muted);font-weight:600">${IC.shield} Test devant livreur</span>
+    <a target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent(`Bonjour ${S.brand}, je souhaite commander : ${p.name} (${fcfa(p.price)}).`)}" style="color:#1FAF55;font-weight:800;text-decoration:none;display:inline-flex;align-items:center;gap:.25rem">${IC.wa.replace('<svg','<svg width="15" height="15"')} WhatsApp</a>
    </div>
-   <a class="btn btn-wa btn-block" target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent(`Bonjour ${S.brand}, je souhaite commander : ${p.name} (${fcfa(p.price)}).`)}">${IC.wa.replace('<svg','<svg width="20" height="20"')} Commander directement sur WhatsApp</a>
 
    <div class="pdp-tabs" role="tablist">
     <button class="pdp-tab-btn" role="tab" aria-selected="true" data-tab="desc">Bénéfices &amp; Usage</button>
